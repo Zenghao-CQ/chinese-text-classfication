@@ -8,6 +8,7 @@
 #*.png
 *.pdf
 *.pyc
+*.npy
 sgns.literature.bigram-char
 report/zh.pptx
 paper/面向可读性评估的文本表示技术研究_蒋智威.xml
