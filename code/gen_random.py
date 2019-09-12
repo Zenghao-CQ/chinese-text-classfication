@@ -12,10 +12,10 @@ valid = [0,0,0,0,0,0]
 for line in fin:
     x = random.randint(0,9)
     if x<8:
-        fout1.write(line+'\n')
+        fout1.write(line)
         train[int(line[0])-1] += 1
     else:
-        fout2.write(line+'\n')
+        fout2.write(line)
         valid[int(line[0])-1] += 1
 
 fin.close()
