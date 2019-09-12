@@ -1,6 +1,8 @@
 *.txt
 !train.txt
 !valid.txt
+!人教+北师大小学.txt
+!人教+北师大中小学.txt
 *.h5
 ！model_d50_0.0005_15.h5
 #*.png
