@@ -1,0 +1,16 @@
+*.txt
+!train.txt
+!valid.txt
+*.h5
+！model_d50_0.0005_15.h5
+#*.png
+*.pdf
+*.pyc
+sgns.literature.bigram-char
+report/zh.pptx
+paper/面向可读性评估的文本表示技术研究_蒋智威.xml
+paper/面向可读性评估的文本表示技术研究_蒋智威.caj
+report/文档分类报告.docx
+code/__pycache__/model.cpython-36.pyc
+.vscode/settings.json
+model/textcnn/model.png
