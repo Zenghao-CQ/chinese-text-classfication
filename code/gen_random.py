@@ -2,10 +2,11 @@
 import random
 import io
 import os
-fin_path = "./data/人教+北师大小学.txt"
+from config import data_path
+fin_path = data_path+os.path.sep+"人教+北师大小学.txt"
 fin = open(fin_path,'r',encoding='utf-8')
-fout1 = open('./data/train.txt','w',encoding='utf-8')
-fout2 = open('./data/valid.txt','w',encoding='utf-8')
+fout1 = open(data_path+os.path.sep+'train.txt','w',encoding='utf-8')
+fout2 = open(data_path+os.path.sep+'valid.txt','w',encoding='utf-8')
 train = [0,0,0,0,0,0]
 valid = [0,0,0,0,0,0]
 

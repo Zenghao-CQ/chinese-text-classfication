@@ -1,7 +1,9 @@
 import numpy as np
 import random
-X = np.load('./data/bert.npy',allow_pickle=True).tolist()
-Y = np.load('./data/lables.npy',allow_pickle=True).tolist()
+from config import data_path
+from os.path import join
+X = np.load(join(data_path,'bert.npy'),allow_pickle=True).tolist()
+Y = np.load(join(data_path,'lables.npy'),allow_pickle=True).tolist()
 Z = list(zip(X,Y))[:724]
 random.shuffle(Z)
 tol_len = len(Z)
@@ -16,10 +18,10 @@ print(train_X.shape)
 print(train_Y.shape)
 print(valid_X.shape)
 print(valid_Y.shape)
-np.save('./data/train_X.npy',train_X)
-np.save('./data/train_Y.npy',train_Y)
-np.save('./data/valid_X.npy',valid_X)
-np.save('./data/valid_Y.npy',valid_Y)
+np.save(join(data_path,'train_X.npy'),train_X)
+np.save(join(data_path,'train_Y.npy'),train_Y)
+np.save(join(data_path,'valid_X.npy'),valid_X)
+np.save(join(data_path,'valid_Y.npy'),valid_Y)
 cls_num = [0]*6
 for t in train_Y:
     cls_num[t]+=1

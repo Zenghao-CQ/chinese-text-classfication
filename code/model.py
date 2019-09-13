@@ -6,13 +6,12 @@ from keras.models import Model
 from keras.layers import Input,Dense,LSTM,Flatten,concatenate,Dropout,Masking,Reshape,Activation
 from keras import regularizers
 import os
-sent_num = 176#nums of one squence 169
-              #Max senteces length:153,useless
-batch_size = 15
-learning_rate = 0.0005
-vec_dim = 768#dim of wordvector
-lstm_dim = 100
-class_num = 6
+from config import sent_num, \
+                    batch_size, \
+                    learning_rate,\
+                    vec_dim, \
+                    lstm_dim, \
+                    class_num
 
 def build_network(model_path=None):
     if model_path is not None:

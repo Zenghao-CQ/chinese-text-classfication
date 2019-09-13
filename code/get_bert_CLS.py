@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*- 
 from keras_bert import load_vocabulary, load_trained_model_from_checkpoint, Tokenizer, get_checkpoint_paths
 import numpy as np
+from config import data_path,bert_path
+import os
 
 
 vec_dim = 768
 sent_len = 220#220
 sent_num = 288#284
 
-file_path = '../data/人教+北师大中小学.txt'
-model_path =  "/home/alex/bert_cls/chinese_L-12_H-768_A-12"
+file_path = os.path.join(data_path,'人教+北师大中小学.txt')
 fin = open(file_path,'r',encoding='utf-8')
-paths = get_checkpoint_paths(model_path)
+paths = get_checkpoint_paths(bert_path)
 model = load_trained_model_from_checkpoint(paths.config, paths.checkpoint, seq_len=sent_len)
 
 token_dict = load_vocabulary(paths.vocab)

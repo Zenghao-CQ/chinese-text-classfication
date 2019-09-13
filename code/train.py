@@ -1,25 +1,24 @@
-# -*- coding: utf-8 -*-  
+# -*- coding: utf-8 -*- 
+import os 
 import numpy as np
 from model import build_network
 import keras
 from keras.callbacks import TensorBoard
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
-import os
+from config import epoch_num, \
+                    sent_num, \
+                    batch_size, \
+                    learning_rate,\
+                    vec_dim, \
+                    class_num, \
+                    data_path
 
-epochnum = 40
-sent_num = 176#nums of one squence 169
-              #Max senteces length:153,useless
-batch_size = 15
-learning_rate = 0.0005
-vec_dim = 728#dim of wordvector
-lstm_dim = 100
-class_num = 6
+train_X = np.load(os.path.join(data_path,"train_X.npy"),allow_pickle = True)
+train_Y = np.load(os.path.join(data_path,"train_Y.npy"),allow_pickle = True)
+valid_X = np.load(os.path.join(data_path,"valid_X.npy"),allow_pickle = True)
+valid_Y = np.load(os.path.join(data_path,"valid_Y.npy"),allow_pickle = True)
 
-train_X = np.load("../data/train_X.npy",allow_pickle = True)
-train_Y = np.load("../data/train_Y.npy",allow_pickle = True)
-valid_X = np.load("../data/valid_X.npy",allow_pickle = True)
-valid_Y = np.load("../data/valid_Y.npy",allow_pickle = True)
 train_X = pad_sequences(train_X, maxlen=sent_num, dtype= 'float32', padding='pre',value=0.)
 train_Y = to_categorical(train_Y)
 valid_X = pad_sequences(valid_X, maxlen=sent_num, dtype= 'float32', padding='pre',value=0.)
@@ -51,7 +50,7 @@ model = build_network()
 #model.optimizer.lr = learning_rate
 his = model.fit( train_X, train_Y,
     batch_size=batch_size,
-    epochs=epochnum, 
+    epochs=epoch_num, 
     verbose=1,
     shuffle=True,
     initial_epoch=0,
