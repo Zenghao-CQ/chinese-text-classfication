@@ -10,7 +10,7 @@ sent_num = 176#nums of one squence 169
               #Max senteces length:153,useless
 batch_size = 15
 learning_rate = 0.0005
-vec_dim = 728#dim of wordvector
+vec_dim = 768#dim of wordvector
 lstm_dim = 100
 class_num = 6
 
@@ -33,9 +33,11 @@ def build_network(model_path=None):
     x = Dropout(0.5,input_shape = (lstm_dim*2, vec_dim),name= 'dropout')(x)
     output = Dense(6,activation='softmax',input_shape = (lstm_dim*2, vec_dim),
                     name = 'softmax')(x)
-    return Model(input,output)
+    model = Model(input,output)
+    omp = keras.optimizers.RMSprop(lr=learning_rate, epsilon=1e-06)
+    model.compile(loss='categorical_crossentropy', optimizer=omp, metrics=['accuracy']) 
+    return model
     
-
 if __name__ == "__main__":
     model = build_network()
     plot_model(model, to_file='model_bert_bilstm.png',show_shapes=True)

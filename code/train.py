@@ -3,20 +3,29 @@ import numpy as np
 from model import build_network
 import keras
 from keras.callbacks import TensorBoard
+from keras.preprocessing.sequence import pad_sequences
+from keras.utils import to_categorical
 import os
-train_X = np.load("../data/train_X_f.npy")
-train_Y = np.load("../data/train_Y_f.npy")
-valid_X = np.load("../data/valid_X_f.npy")
-valid_Y = np.load("../data/valid_Y_f.npy")
-#x = keras.preprocessing.sequence.pad_sequences(x,maxlen=6,dtype= x.dtype, padding='pre',value=0.)
-epochnum = 70
-page_size = 1818#words of one squence
+
+epochnum = 40
+sent_num = 176#nums of one squence 169
+              #Max senteces length:153,useless
 batch_size = 15
 learning_rate = 0.0005
-vec_dim = 300#dim of wordvector
+vec_dim = 728#dim of wordvector
+lstm_dim = 100
 class_num = 6
 
-modelpath = '../model/model_d50.h5'
+train_X = np.load("../data/train_X.npy",allow_pickle = True)
+train_Y = np.load("../data/train_Y.npy",allow_pickle = True)
+valid_X = np.load("../data/valid_X.npy",allow_pickle = True)
+valid_Y = np.load("../data/valid_Y.npy",allow_pickle = True)
+train_X = pad_sequences(train_X, maxlen=sent_num, dtype= 'float32', padding='pre',value=0.)
+train_Y = to_categorical(train_Y)
+valid_X = pad_sequences(valid_X, maxlen=sent_num, dtype= 'float32', padding='pre',value=0.)
+valid_Y = to_categorical(valid_Y)
+print("****data load success...")
+modelpath = '../model/model_bert_lstm.h5'
 #modelpath = '../model/model{epoch:03d}.h5'
 boardpath = './logs'
 
@@ -37,7 +46,6 @@ tbCallBack = TensorBoard(log_dir=boardpath,  # log 目录
                 embeddings_layer_names=None, 
                 embeddings_metadata=None)
 
-print("****data load success...")
 model = build_network()
 #model = build_network("../model/epoch.h5")
 #model.optimizer.lr = learning_rate
@@ -47,5 +55,5 @@ his = model.fit( train_X, train_Y,
     verbose=1,
     shuffle=True,
     initial_epoch=0,
-    callbacks = [back],#,tbCallBack],
+    callbacks = [tbCallBack],#back
     validation_data = (valid_X,valid_Y))
