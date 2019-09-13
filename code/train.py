@@ -2,12 +2,13 @@
 import numpy as np
 from model import build_network
 import keras
-from tensorflow.keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard
 import os
 train_X = np.load("../data/train_X_f.npy")
 train_Y = np.load("../data/train_Y_f.npy")
 valid_X = np.load("../data/valid_X_f.npy")
 valid_Y = np.load("../data/valid_Y_f.npy")
+#x = keras.preprocessing.sequence.pad_sequences(x,maxlen=6,dtype= x.dtype, padding='pre',value=0.)
 epochnum = 70
 page_size = 1818#words of one squence
 batch_size = 15

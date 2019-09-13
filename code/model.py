@@ -1,74 +1,42 @@
 # -*- coding: utf-8 -*-  
 from keras.utils import plot_model
-import keras
-from keras.models import Model,Sequential
-from keras.layers import *
-from keras import regularizers
-from keras import backend as K
 import numpy as np
+import keras
+from keras.models import Model
+from keras.layers import Input,Dense,LSTM,Flatten,concatenate,Dropout,Masking,Reshape,Activation
+from keras import regularizers
 import os
-import sys
-page_size = 1818#words of one squence
+sent_num = 176#nums of one squence 169
+              #Max senteces length:153,useless
 batch_size = 15
 learning_rate = 0.0005
-vec_dim = 300#dim of wordvector
-kl_size = [2,3,4]##kernal size
-fl_size = 50##filter szie
+vec_dim = 728#dim of wordvector
+lstm_dim = 100
 class_num = 6
 
-embedMatrix = np.zeros((187980 + 1,vec_dim))#words + stopword
-vec_path = os.path.realpath(__file__)
-vec_path = os.path.dirname(vec_path)
-vec_path = os.path.dirname(vec_path)
-vec_path = os.path.join(vec_path,'sgns.literature.bigram-char')
-#femd = open("D:/NLP/文本分类/sgns.literature.bigram-char",'r',encoding='utf-8')
-femd = open(vec_path,'r',encoding='utf-8')
-#Build embedding matrix
-cnt = 0
-femd.readline()
+def build_network(model_path=None):
+    if model_path is not None:
+        try:
+            return keras.models.load_model(filepath = model_path)
+        except OSError:
+            print('Model path is not found')
+    input = Input(shape=(sent_num,vec_dim),name="input")
+    masked = Masking(mask_value=0.,input_shape = (sent_num, vec_dim), 
+                    name="mask_zero")(input)
+    f_lstm = LSTM(units = lstm_dim, input_shape = (sent_num, vec_dim),
+                    dropout = 0.2, name = 'LSTM_F')(masked)#foward
+    b_lstm = LSTM(units = lstm_dim, input_shape = (sent_num, vec_dim),
+                    dropout = 0.2, name = 'LSTM_B')(masked)#backward
+    x = concatenate([f_lstm,b_lstm],axis = 1,name = 'concat')
+    x = Activation(activation='tanh',input_shape = (lstm_dim*2, vec_dim),
+                    name = 'activate')(x)
+    x = Dropout(0.5,input_shape = (lstm_dim*2, vec_dim),name= 'dropout')(x)
+    output = Dense(6,activation='softmax',input_shape = (lstm_dim*2, vec_dim),
+                    name = 'softmax')(x)
+    return Model(input,output)
+    
 
-for line in femd:
-	cnt += 1
-	wlist = line.split(' ')
-	key = wlist[0]#"key vector \n"
-	wlist = wlist[1:-1]
-	wlist = [float(x) for x in wlist]#str to float
-	embedMatrix[cnt] = wlist
-
-def build_network(model_path = None):
-	if model_path is not None:
-		try:
-			return keras.models.load_model(filepath = model_path)
-		except OSError:
-			print('Model path is not found')
-	#build a new model
-	###Embedding
-	in_put = Input(shape=(page_size,))	
-	###embed
-	embed = Embedding(input_dim = len(embedMatrix),
-						output_dim = vec_dim,
-                        weights=[embedMatrix],
-						mask_zero = False,
-                        trainable=False,
-						input_length=page_size
-						)
-	in_ = embed(in_put)
-	conv_out = []
-	##convolution
-	for kl in kl_size:
-		conv_t = Conv1D(filters = fl_size,kernel_size = kl,activation = "tanh")(in_)
-		pool_t = MaxPooling1D(K.int_shape(conv_t)[1])(conv_t)
-		pool_t = Flatten()(pool_t)
-		conv_out.append(pool_t)
-	conv_out = concatenate(conv_out,axis = 1)
-	conv_out = Dropout(0.5)(conv_out)
-	##dense
-	out_put = Dense(class_num, activation='softmax',kernel_regularizer=regularizers.l1(0.01))(conv_out)
-	model = Model(in_put, out_put)
-	omp = keras.optimizers.RMSprop(lr=learning_rate, epsilon=1e-06)
-	model.compile(loss='categorical_crossentropy', optimizer=omp, metrics=['accuracy'])
-	return model
 if __name__ == "__main__":
-	model = build_network()
-	plot_model(model, to_file='model.png',show_shapes=True)
-	model.summary()
+    model = build_network()
+    plot_model(model, to_file='model_bert_bilstm.png',show_shapes=True)
+    model.summary()

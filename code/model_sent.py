@@ -2,8 +2,9 @@
 from keras.utils import plot_model
 import keras
 from keras.models import Model,Sequential
-from keras.layers import *
+from keras.layers import Layer,Input,Dense,LSTM,Flatten,concatenate,Dropout,Bidirectional,Embedding,Reshape
 from keras import regularizers
+import keras.backend as K
 import numpy as np
 page_size = 1818#words of one squence
 batch_size = 16
