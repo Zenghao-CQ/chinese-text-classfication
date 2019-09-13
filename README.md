@@ -4,7 +4,7 @@
 >split the sentences and write into file ./data人教+北师大中小学
     
 ##### ./data/train.txt&valid.txt
-    enof sentence: "##",now useless
+end of sentence: "##",now useless
 
 ##### ./get_bert_CLS.py
 >load **Bert** and predict CLS vector of each sentence
